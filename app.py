@@ -300,4 +300,4 @@ def serve_sitemap():
     )
 
 if __name__ == "__main__":
-    waitress.serve(flask_api, host="127.0.0.1", port=8080, threads=8)
+    waitress.serve(flask_api, host="0.0.0.0", port=8080, threads=8)
