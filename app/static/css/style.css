@@ -1,0 +1,222 @@
+/* Light Theme - Default */
+* {
+    margin: auto;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+body {
+    background-color: white;
+    color: black;
+    width: 800px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+header {
+    width: 100%;
+}
+
+main {
+    margin-bottom: 20px;
+}
+
+footer {
+    border-top: 1px solid black;
+    padding-top: 10px;
+    margin-bottom: 20px;
+}
+
+a {
+    font-family: 'Courier New', Courier, monospace;
+    border: 1px solid white;
+    color: red;
+    text-decoration: none;
+}
+
+a:hover {
+    background-color: red;
+    border: 1px solid red;
+    color: white;
+}
+
+.button {
+    width: 64px;
+    background-color: black;
+    filter: invert(1);
+}
+
+.button:hover {
+    background-color: black;
+    filter: invert(0);
+}
+
+.empty-space,
+.empty-land {
+    width: 64px;
+}
+
+.cloud,
+.balloon {
+    width: 10px;
+    filter: invert(1);
+}
+
+.float-up, .float-down {
+    position: absolute;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    top: -20px;
+    height: 104px;
+}
+
+.float-up {
+    animation-name: float;
+    animation-direction: reverse;
+    animation-duration: 6s;
+}
+
+.float-down {
+    animation-name: float;
+    animation-direction: normal;
+    animation-duration: 8s;
+}
+
+@keyframes float {
+    0% {
+        transform: translateX(0) translateY(0%);
+    }
+    100% {
+        transform: translateX(0) translateY(100%);
+    }
+}
+
+#space,
+#air,
+#land {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+#land {
+    background:
+        repeating-linear-gradient(
+            135deg,
+            black 0,
+            black 1px,
+            white 1px,
+            white 6px
+        );
+    background-size: 100% 4px;
+    background-position: 0 0, 1px 1px;
+}
+
+
+#story-container {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: small;
+    line-height: 2;
+    letter-spacing: 2;
+    padding: 0;
+    text-align: justify;
+    color: black;
+    white-space: wrap;
+}
+
+#otherworld {
+    width: 128px;
+}
+
+#story-tag {
+    display: none;
+}
+
+/* Dark Theme */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: black;
+        color: lightgrey;
+    }
+
+    footer {
+        border-top: 1px solid white;
+    }
+
+    a {
+        border-color: black;
+    }
+
+    a:hover {
+        border-color: red;
+        color: lightgrey
+    }
+
+    .cloud,
+    .balloon,
+    .button {
+        filter: invert(0);
+    }
+
+    .button:hover {
+        background-color: black;
+        filter: invert(1);
+    }
+
+    #land {
+        background:
+            repeating-linear-gradient(
+                135deg,
+                white 0,
+                white 1px,
+                black 1px,
+                black 6px
+            );
+        background-size: 100% 4px;
+        background-position: 0 0, 1px 1px;
+    }
+
+    #story-container {
+        color: lightgrey;
+        position: relative;
+    }
+}
+
+/* Medium Screens */
+@media (max-width: 890px) {
+    body {
+        width: 90%;
+    }
+
+    #wide-float .cloud,
+    #wide-float .balloon {
+        display: none;
+    }
+}
+
+/* Small Screens */
+@media (max-width: 600px) {
+    .empty-land {
+        display: none;
+    }
+}
+
+/* Very Small Screens */
+@media (max-width: 320px) {
+    .button {
+        width: 20%;
+    }
+
+    #otherworld {
+        width: 40%;
+    }
+
+    #normal-float .cloud,
+    #normal-float .balloon {
+        display: none;
+    }
+}

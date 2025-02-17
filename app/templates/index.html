@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="robots" content="index, follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="canonical" href="https://milky.solar" />
+
+        <title>Wolf</title>
+
+        <meta name="author" content="Aleksey">
+        <meta name="description" content="Follow Wolfs journeys through time and space, navigating eternal cycles of conflict and transformation.">
+
+        <!-- Schema.org Protocol -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebPage",
+                "name": "Wolf",
+                "author": {
+                    "@type": "Person",
+                    "name": "Aleksey"
+                },
+                "description": "Follow Wolfs journeys through time and space, navigating eternal cycles of conflict and transformation.",
+                "url": "https://milky.solar/",
+                "image": {
+                    "@type": "ImageObject",
+                    "url": "https://milky.solar/static/img/Logo.svg",
+                    "caption": "Generated image of a wolf."
+                }
+            }
+        </script>
+
+        <!-- Open Graph Protocol -->
+        <meta property="og:locale" content="en_US">
+        <meta property="og:site_name" content="Earth">
+        <meta property="og:title" content="Wolf">
+        <meta property="og:type" content="website">
+        <meta property="og:image" content="https://milky.solar/static/img/Logo.svg">
+        <meta property="og:image:alt" content="Generated image of a wolf.">
+        <meta property="og:description" content="Follow Wolfs journeys through time and space, navigating eternal cycles of conflict and transformation.">
+        <meta property="og:url" content="https://milky.solar/">
+
+        <!-- Twitter Card Protocol -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Wolf">
+        <meta name="twitter:description" content="Follow Wolfs journeys through time and space, navigating eternal cycles of conflict and transformation.">
+        <meta name="twitter:image" content="https://milky.solar/static/img/Logo.svg">
+
+        <!-- Dublin Core Protocol -->
+        <meta name="DC.title" content="Wolf">
+        <meta name="DC.creator" content="Aleksey">
+        <meta name="DC.description" content="Follow Wolfs journeys through time and space, navigating eternal cycles of conflict and transformation.">
+        <meta name="DC.language" content="en">
+
+        <link rel="icon" href="https://milky.solar/static/img/Logo.ico" type="image/x-icon">
+        <link rel="icon" href="https://milky.solar/static/img/Logo.svg" type="image/svg+xml">
+        <link rel="icon" href="https://milky.solar/static/img/Logo.jpg" type="image/jpeg">
+        <link rel="apple-touch-icon" href="https://milky.solar/static/img/Logo.jpg">
+
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+        <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+
+    </head>
+
+    <body>
+
+        <header>
+            <div id="space">
+                <img data-scenario="new" id="new" class="button" src="{{ url_for('static', filename='img/scenarios/new.png') }}" alt="New Story">
+                <img data-scenario="otherworld" id="otherworld" class="button" src="{{ url_for('static', filename='img/scenarios/otherworld.png') }}" alt="Otherworld">
+                <div class="empty-space"></div>
+            </div>
+            <div id="air">
+                <div id="normal-float">
+                    <div class="float-up" style="left: calc(min(10%, calc(50% - 64px))); animation-delay: 0s; animation-duration: 8s;">
+                        <img class="balloon" src="{{ url_for('static', filename='img/home/Balloon.png') }}">
+                    </div>
+                    <div class="float-down" style="left: calc(min(20%, calc(50% - 64px))); animation-delay: 1s;">
+                        <img class="cloud" src="{{ url_for('static', filename='img/home/Cloud.png') }}">
+                    </div>
+                    <div class="float-up" style="left: calc(min(30%, calc(50% - 64px))); animation-delay: 4s; animation-duration: 6s;">
+                        <img class="balloon" src="{{ url_for('static', filename='img/home/Balloon 2.png') }}">
+                    </div>
+                    <div class="float-down" style="left: calc(min(40%, calc(50% - 64px))); animation-delay: 7s;">
+                        <img class="cloud" src="{{ url_for('static', filename='img/home/Cloud 4.png') }}">
+                    </div>
+                    <div class="float-down" style="left: calc(max(calc(50% + 64px), 60%)); animation-delay: 3s;">
+                        <img class="cloud" src="{{ url_for('static', filename='img/home/Cloud 3.png') }}">
+                    </div>
+                    <div class="float-up" style="left: calc(max(calc(50% + 64px), 70%)); animation-delay: 5s; animation-duration: 7s;">
+                        <img class="balloon" src="{{ url_for('static', filename='img/home/Balloon 3.png') }}">
+                    </div>
+                    <div class="float-down" style="left: calc(max(calc(50% + 64px), 80%)); animation-delay: 2s;">
+                        <img class="cloud" src="{{ url_for('static', filename='img/home/Cloud 2.png') }}">
+                    </div>
+                    <div class="float-up" style="left: calc(max(calc(50% + 64px), 90%)); animation-delay: 6s; animation-duration: 8s;">
+                        <img class="balloon" src="{{ url_for('static', filename='img/home/Balloon 4.png') }}">
+                    </div>
+                </div>
+                <img data-scenario="random" id="random" class="button" src="{{ url_for('static', filename='img/home/Home.png') }}" alt="Random Story">
+                <div id="wide-float">
+                    <div class="float-down" style="left: calc(min(5%, calc(50% - 64px))); animation-delay: 7s;">
+                        <img class="cloud" src="{{ url_for('static', filename='img/home/Cloud 3.png') }}">
+                    </div>
+                    <div class="float-up" style="left: calc(min(15%, calc(50% - 64px))); animation-delay: 5s;">
+                        <img class="balloon" src="{{ url_for('static', filename='img/home/Balloon 2.png') }}">
+                    </div>
+                    <div class="float-down" style="left: calc(min(25%, calc(50% - 64px))); animation-delay: 3s;">
+                        <img class="cloud" src="{{ url_for('static', filename='img/home/Cloud 2.png') }}">
+                    </div>
+                    <div class="float-up" style="left: calc(min(35%, calc(50% - 64px))); animation-delay: 6s; animation-duration: 7s;">
+                        <img class="balloon" src="{{ url_for('static', filename='img/home/Balloon 3.png') }}">
+                    </div>
+                    <div class="float-up" style="left: calc(max(calc(50% + 64px), 65%)); animation-delay: 2s; animation-duration: 6s;">
+                        <img class="balloon" src="{{ url_for('static', filename='img/home/Balloon 4.png') }}">
+                    </div>
+                    <div class="float-down" style="left: calc(max(calc(50% + 64px), 75%)); animation-delay: 1s;">
+                        <img class="cloud" src="{{ url_for('static', filename='img/home/Cloud.png') }}">
+                    </div>
+                    <div class="float-up" style="left: calc(max(calc(50% + 64px), 85%)); animation-delay: 4s;">
+                        <img class="balloon" src="{{ url_for('static', filename='img/home/Balloon.png') }}">
+                    </div>
+                    <div class="float-down" style="left: calc(max(calc(50% + 64px), 95%)); animation-delay: 0s;">
+                        <img class="cloud" src="{{ url_for('static', filename='img/home/Cloud 4.png') }}">
+                    </div>
+                </div>
+            </div>
+            <div id="land">
+                <div class="empty-land"></div>
+                <img data-scenario="israel" class="button" src="{{ url_for('static', filename='img/scenarios/israel.png') }}" alt="Israel">
+                <img data-scenario="australia" class="button" src="{{ url_for('static', filename='img/scenarios/australia.png') }}" alt="Australia">
+                <img data-scenario="newzealand" class="button" src="{{ url_for('static', filename='img/scenarios/newzealand.png') }}" alt="New Zealand">
+                <img data-scenario="california" class="button" src="{{ url_for('static', filename='img/scenarios/california.png') }}" alt="California">
+                <img data-scenario="unitedkingdom" class="button" src="{{ url_for('static', filename='img/scenarios/unitedkingdom.png') }}" alt="United Kingdom">
+                <div class="empty-land"></div>
+            </div>
+        </header>
+
+        <main>
+            <h1 id="story-tag">Story</h1>
+            <div id="story-container" style="display:none;" aria-live="polite"></div>
+        </main>
+
+        <footer>
+            <a href="mailto:earth@milky.solar" aria-label="Email">@</a>
+        </footer>
+
+    </body>
+
+</html>
