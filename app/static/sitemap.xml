@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    <url>
+        <loc>https://milky.solar/</loc>
+        <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://milky.solar/static/img/Philadelphia.jpg</image:loc>
+            <image:title>Philadelphia</image:title>
+            <image:geo_location>Philadelphia</image:geo_location>
+        </image:image>
+    </url>
+</urlset>
