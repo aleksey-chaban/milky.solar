@@ -1,4 +1,4 @@
 flask
 waitress
-psycopg2
+psycopg
 openai

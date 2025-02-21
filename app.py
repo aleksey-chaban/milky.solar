@@ -4,8 +4,8 @@ import logging
 import os
 import random
 
-import psycopg2
-from psycopg2.extras import DictCursor
+import psycopg
+from psycopg.rows import dict_row
 
 from logging.handlers import RotatingFileHandler
 
@@ -21,7 +21,6 @@ if not os.path.exists(os.path.join(os.getcwd(), "logs")):
 
 if not os.path.exists(log_path):
     open(log_path, mode="w", encoding="utf8").close()
-
 
 file_handler = RotatingFileHandler(
     log_path,
@@ -57,22 +56,21 @@ POSTGRES_PORT = os.getenv("postgres_milky_solar_port")
 
 def get_db_connection():
     """Create a new database connection."""
-    return psycopg2.connect(
+    return psycopg.connect(
         dbname=POSTGRES_DB,
         user=POSTGRES_USER,
         password=POSTGRES_PASSWORD,
         host=POSTGRES_HOST,
         port=POSTGRES_PORT,
-        cursor_factory=DictCursor
+        row_factory=dict_row
     )
-
 
 def get_story(scenario):
     """Retrieve a story from the specified scenario."""
     with get_db_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(f"SELECT COUNT(*) FROM {scenario}")
-            total_rows = cursor.fetchone()[0]
+            total_rows = cursor.fetchone()["count"]
             random_id = random.randint(1, total_rows)
 
             logger.info("%s index selected: %s", scenario, random_id)
@@ -131,7 +129,7 @@ def unlock_story(request, database):
     with get_db_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(f"INSERT INTO {database} (story) VALUES (%s) RETURNING id", (story,))
-            story_id = cursor.fetchone()[0]
+            story_id = cursor.fetchone()["id"]
 
             cursor.execute("INSERT INTO stories (scenario, story_id) VALUES (%s, %s)", (database, story_id))
 
@@ -167,7 +165,7 @@ def get_random_story():
     with get_db_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute("SELECT COUNT(*) FROM stories")
-            total_rows = cursor.fetchone()[0]
+            total_rows = cursor.fetchone()["count"]
             random_index = random.randint(1, total_rows)
 
             logger.info("Random index selected: %s", random_index)
