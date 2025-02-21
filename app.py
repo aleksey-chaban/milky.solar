@@ -16,6 +16,9 @@ from openai import OpenAI
 
 log_path = os.path.join(os.getcwd(), "logs", "site.log")
 
+if not os.path.exists(os.path.join(os.getcwd(), "logs")):
+    os.mkdir(os.path.join(os.getcwd(), "logs"))
+
 if not os.path.exists(log_path):
     open(log_path, mode="w", encoding="utf8").close()
 
