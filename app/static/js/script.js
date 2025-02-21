@@ -1,8 +1,15 @@
 document.addEventListener("DOMContentLoaded", function() {
     let unlockScenario = "new-random";
     const storyContainer = document.getElementById("story-container");
+    let isFetching = false;
+    const scenarioButtons = document.querySelectorAll("img[data-scenario]");
 
     async function fetchStory(scenario) {
+        if (isFetching) return;
+        isFetching = true;
+
+        scenarioButtons.forEach(button => button.disabled = true);
+
         storyContainer.innerText = "";
         storyContainer.style.display = "block";
 
@@ -16,8 +23,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
 
+                storyContainer.innerText = "";
+
                 while (true) {
-                    const {value, done} = await reader.read();
+                    const { value, done } = await reader.read();
                     if (done) break;
                     storyContainer.innerText += decoder.decode(value);
                 }
@@ -34,10 +43,13 @@ document.addEventListener("DOMContentLoaded", function() {
         } catch (error) {
             storyContainer.innerText = "An error occurred.";
             console.error(error);
+        } finally {
+            isFetching = false;
+            scenarioButtons.forEach(button => button.disabled = false);
         }
     }
 
-    document.querySelectorAll("img[data-scenario]").forEach(button => {
+    scenarioButtons.forEach(button => {
         button.addEventListener("click", () => {
             const scenario = button.getAttribute("data-scenario");
             fetchStory(scenario);
