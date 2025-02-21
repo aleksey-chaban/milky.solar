@@ -158,7 +158,6 @@ scenarios = [
     "newzealand",
     "otherworld",
     "california",
-    "finland",
     "unitedkingdom"
 ]
 for scenario in scenarios:
