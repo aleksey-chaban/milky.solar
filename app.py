@@ -4,12 +4,13 @@ import logging
 import os
 import random
 
+from logging.handlers import RotatingFileHandler
+
 import psycopg
 from psycopg.rows import dict_row
 
-from logging.handlers import RotatingFileHandler
-
 import flask
+from flask import Response
 import waitress
 
 from openai import OpenAI
@@ -84,7 +85,6 @@ def get_story(scenario):
 
 def unlock_story(request, database):
     """Unlock a story."""
-    logger.info("Unlocking scenario")
 
     openai_key = os.getenv("openai_milky_solar_key")
     openai_org = os.getenv("openai_milky_solar_org")
@@ -107,39 +107,45 @@ def unlock_story(request, database):
 
     logger.info("Gathered instructions")
 
-    response = client.chat.completions.create(
-        model="gpt-4o-2024-11-20",
-        temperature=0.6,
-        messages=[
-            {
-                "role": "system",
-                "content": system_instructions
-            },
-            {
-                "role": "user",
-                "content": request
-            }
-        ]
-    )
+    def generate():
+        response_stream = client.chat.completions.create(
+            model="gpt-4o-2024-11-20",
+            temperature=0.6,
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_instructions
+                },
+                {
+                    "role": "user",
+                    "content": request
+                }
+            ],
+            stream=True
+        )
 
-    story = response.choices[0].message.content
+        story_content = ""
+        for chunk in response_stream:
+            if chunk.choices[0].delta.content is not None:
+                text_chunk = chunk.choices[0].delta.content
+                story_content += text_chunk
+                yield text_chunk
 
-    logger.info("Discovered scenario")
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(f"INSERT INTO {database} (story) VALUES (%s) RETURNING id", (story_content,))
+                story_id = cursor.fetchone()["id"]
 
-    with get_db_connection() as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(f"INSERT INTO {database} (story) VALUES (%s) RETURNING id", (story,))
-            story_id = cursor.fetchone()["id"]
+                cursor.execute("INSERT INTO stories (scenario, story_id) VALUES (%s, %s)", (database, story_id))
 
-            cursor.execute("INSERT INTO stories (scenario, story_id) VALUES (%s, %s)", (database, story_id))
+                connection.commit()
 
-            logger.info("Unlocked %s scenario %s", database, story_id)
+            logger.info("Stored %s scenario %s", database, story_id)
 
-        connection.commit()
+        logger.info("Retrieved story")
 
-    logger.info("Retrieved story")
 
-    return flask.jsonify({"story": story})
+    return Response(generate(), content_type="text/plain")
 
 @flask_api.route("/")
 def home():
@@ -221,4 +227,4 @@ def serve_sitemap():
     )
 
 if __name__ == "__main__":
-    waitress.serve(flask_api, host="0.0.0.0", port=10000, threads=8)
+    waitress.serve(flask_api, host="127.0.0.1", port=10000, threads=8)

@@ -3,32 +3,39 @@ document.addEventListener("DOMContentLoaded", function() {
     const storyContainer = document.getElementById("story-container");
 
     async function fetchStory(scenario) {
-        storyContainer.style.display = "none";
-        storyContainer.innerText = "Loading";
+        storyContainer.innerText = "";
         storyContainer.style.display = "block";
 
         try {
             let response;
             if (scenario === "new") {
                 response = await fetch(`/${unlockScenario}`);
+                if (!response.ok) {
+                    throw new Error("Story failed to generate.");
+                }
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                while (true) {
+                    const {value, done} = await reader.read();
+                    if (done) break;
+                    storyContainer.innerText += decoder.decode(value);
+                }
             } else {
                 response = await fetch(`/${scenario}`);
+                const data = await response.json();
+
+                if (data.story) {
+                    storyContainer.innerText = data.story;
+                } else {
+                    throw new Error("Error fetching story.");
+                }
             }
-            const data = await response.json();
-            storyContainer.style.display = "none";
-            if (data.story) {
-                storyContainer.innerText = data.story;
-            } else {
-                storyContainer.innerText = "Error fetching story.";
-            };
         } catch (error) {
-            storyContainer.style.display = "none";
             storyContainer.innerText = "An error occurred.";
             console.error(error);
-        };
-
-        storyContainer.style.display = "block";
-    };
+        }
+    }
 
     document.querySelectorAll("img[data-scenario]").forEach(button => {
         button.addEventListener("click", () => {
