@@ -55,4 +55,41 @@ document.addEventListener("DOMContentLoaded", function() {
             fetchStory(scenario);
         });
     });
+
+    const wolf = document.getElementById("wolf-animation");
+    let lastScrollTop = 0;
+    let scrollTimeout;
+    let currentDirection = "sitting";
+
+    window.addEventListener("scroll", () => {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      clearTimeout(scrollTimeout);
+
+      if (scrollTop > lastScrollTop) {
+        if (currentDirection !== "right") {
+          wolf.src = animations.standUpRight;
+          setTimeout(() => wolf.src = animations.walkingRight, 200);
+          currentDirection = "right";
+        }
+      } else if (scrollTop < lastScrollTop) {
+        if (currentDirection !== "left") {
+          wolf.src = animations.standUpLeft;
+          setTimeout(() => wolf.src = animations.walkingLeft, 200);
+          currentDirection = "left";
+        }
+      }
+
+      scrollTimeout = setTimeout(() => {
+        if (currentDirection === "right") {
+          wolf.src = animations.sitDownRight;
+          setTimeout(() => wolf.src = animations.sitting, 200);
+        } else if (currentDirection === "left") {
+          wolf.src = animations.sitDownLeft;
+          setTimeout(() => wolf.src = animations.sitting, 200);
+        }
+        currentDirection = "sitting";
+      }, 200);
+
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
 });
