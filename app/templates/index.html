@@ -63,6 +63,17 @@
         <link rel="apple-touch-icon" href="https://milky.solar/static/img/Logo.jpg">
 
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+        <script>
+            const animations = {
+                sitting: "{{ url_for('static', filename='img/animation/Wolf-Sit-Default.gif') }}",
+                standUpRight: "{{ url_for('static', filename='img/animation/Wolf-Stand-Right.gif') }}",
+                walkingRight: "{{ url_for('static', filename='img/animation/Wolf-Walk-Right.gif') }}",
+                sitDownRight: "{{ url_for('static', filename='img/animation/Wolf-Sit-Right.gif') }}",
+                standUpLeft: "{{ url_for('static', filename='img/animation/Wolf-Stand-Left.gif') }}",
+                walkingLeft: "{{ url_for('static', filename='img/animation/Wolf-Walk-Left.gif') }}",
+                sitDownLeft: "{{ url_for('static', filename='img/animation/Wolf-Sit-Left.gif') }}"
+            };
+        </script>
         <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
 
     </head>
@@ -71,7 +82,11 @@
 
         <header>
             <div id="space">
-                <img data-scenario="new" id="new" class="button" src="{{ url_for('static', filename='img/scenarios/new.png') }}" alt="New Story">
+                <img data-scenario="new" id="new" class="button"
+                    src="{{ url_for('static', filename='img/scenarios/new.png') }}"
+                    onmouseover="this.src='{{ url_for('static', filename='img/scenarios/new-invert.png') }}';"
+                    onmouseout="this.src='{{ url_for('static', filename='img/scenarios/new.png') }}';"
+                    alt="New Story">
                 <img data-scenario="otherworld" id="otherworld" class="button" src="{{ url_for('static', filename='img/scenarios/otherworld.png') }}" alt="Otherworld">
                 <div class="empty-space"></div>
             </div>
@@ -148,6 +163,7 @@
 
         <footer>
             <a href="mailto:earth@milky.solar" aria-label="Email">@</a>
+            <div class="wolf-container"><img id="wolf-animation" src="{{ url_for('static', filename='img/animation/Wolf-Sit-Default.gif') }}" alt="Wolf animation"></div>
         </footer>
 
     </body>
