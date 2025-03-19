@@ -68,13 +68,13 @@ document.addEventListener("DOMContentLoaded", function() {
       if (scrollTop > lastScrollTop) {
         if (currentDirection !== "right") {
           wolf.src = animations.standUpRight;
-          setTimeout(() => wolf.src = animations.walkingRight, 200);
+          setTimeout(() => wolf.src = animations.walkingRight, 384);
           currentDirection = "right";
         }
       } else if (scrollTop < lastScrollTop) {
         if (currentDirection !== "left") {
           wolf.src = animations.standUpLeft;
-          setTimeout(() => wolf.src = animations.walkingLeft, 200);
+          setTimeout(() => wolf.src = animations.walkingLeft, 384);
           currentDirection = "left";
         }
       }
@@ -82,13 +82,11 @@ document.addEventListener("DOMContentLoaded", function() {
       scrollTimeout = setTimeout(() => {
         if (currentDirection === "right") {
           wolf.src = animations.sitDownRight;
-          setTimeout(() => wolf.src = animations.sitting, 200);
         } else if (currentDirection === "left") {
           wolf.src = animations.sitDownLeft;
-          setTimeout(() => wolf.src = animations.sitting, 200);
         }
         currentDirection = "sitting";
-      }, 200);
+      }, 128);
 
       lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
     });
