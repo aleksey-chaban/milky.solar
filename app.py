@@ -70,13 +70,13 @@ def get_story(scenario):
     """Retrieve a story from the specified scenario."""
     with get_db_connection() as connection:
         with connection.cursor() as cursor:
-            cursor.execute(f"SELECT COUNT(*) FROM {scenario}")
+            cursor.execute("SELECT COUNT(*) FROM %s", (scenario,))
             total_rows = cursor.fetchone()["count"]
             random_id = random.randint(1, total_rows)
 
             logger.info("%s index selected: %s", scenario, random_id)
 
-            cursor.execute(f"SELECT story FROM {scenario} WHERE id = %s", (random_id,))
+            cursor.execute("SELECT story FROM %s WHERE id = %s", (scenario, random_id))
             story = cursor.fetchone()["story"]
 
             logger.info("Retrieved story")
@@ -133,7 +133,7 @@ def unlock_story(request, database):
 
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(f"INSERT INTO {database} (story) VALUES (%s) RETURNING id", (story_content,))
+                cursor.execute("INSERT INTO %s (story) VALUES (%s) RETURNING id", (database, story_content))
                 story_id = cursor.fetchone()["id"]
 
                 cursor.execute("INSERT INTO stories (scenario, story_id) VALUES (%s, %s)", (database, story_id))
@@ -181,7 +181,7 @@ def get_random_story():
 
             logger.info("Scenario: %s, Story ID: %s", scenario, story_id)
 
-            cursor.execute(f"SELECT story FROM {scenario} WHERE id = %s", (story_id,))
+            cursor.execute("SELECT story FROM %s WHERE id = %s", (scenario, story_id))
             story = cursor.fetchone()["story"]
 
             logger.info("Retrieved story")
