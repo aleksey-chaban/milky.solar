@@ -154,6 +154,15 @@
                 <img data-scenario="unitedkingdom" class="button" src="{{ url_for('static', filename='img/scenarios/unitedkingdom.png') }}" alt="United Kingdom">
                 <div class="empty-land"></div>
             </div>
+            <div class="guest">
+                <div class="guest-input">
+                    <textarea id="guest-text" name="guest-input" rows="6" minlength="1" maxlength="999" placeholder="Who are you?" required></textarea>
+                    <div id="guest-counter">0/999</div>
+                </div>
+                <button type="submit" id="guest-submit">
+                    <span id="guest-submit-label">Submit</span>
+                </button>
+            </div>
         </header>
 
         <main>
@@ -162,8 +171,11 @@
         </main>
 
         <footer>
-            <a href="mailto:earth@milky.solar" aria-label="Email">@</a>
-            <div class="wolf-container"><img id="wolf-animation" src="{{ url_for('static', filename='img/animation/Wolf-Sit-Default.gif') }}" alt="Wolf animation"></div>
+            <div class="footer-container">
+                <span>Powered by ChatGPT</span>
+                <a href="mailto:earth@milky.solar" aria-label="Email">@</a>
+            </div>
+            <div class="wolf-container"><img id="wolf" src="{{ url_for('static', filename='img/animation/Wolf-Sit-Default.gif') }}" alt="Wolf animation"></div>
         </footer>
 
     </body>

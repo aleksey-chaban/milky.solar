@@ -56,7 +56,70 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    const wolf = document.getElementById("wolf-animation");
+    const input = document.getElementById("guest-text");
+    const counter = document.getElementById("guest-counter");
+
+    if (input && counter) {
+      const maxLength = input.maxLength;
+
+      input.addEventListener("input", function () {
+          const remainingLength = input.value.length;
+          counter.textContent = `${remainingLength}/${maxLength}`;
+      });
+    };
+
+    const guestButton = document.getElementById("guest-submit");
+
+    if (input && guestButton) {
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          guestButton.click();
+          input.value = "";
+        }
+      });
+    }
+
+    if (guestButton) {
+      guestButton.addEventListener("click", async () => {
+            const inputValue = input.value.trim();
+            if (!inputValue) return;
+            isFetching = true;
+
+            storyContainer.innerText = "Locating your profile";
+            storyContainer.style.display = "block";
+
+            try {
+                const response = await fetch("/new-guest", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({guestInput: inputValue})
+                });
+
+                storyContainer.innerText = "";
+
+                if (!response.ok) {
+                    throw new Error("Story failed to generate.");
+                }
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                while (true) {
+                  const {value, done} = await reader.read();
+                  if (done) break;
+                  storyContainer.innerText += decoder.decode(value);
+                }
+            } catch (error) {
+                storyContainer.innerText = "An error occurred.";
+                console.error(error);
+            } finally {
+                isFetching = false;
+            }
+        });
+    }
+
+    const wolf = document.getElementById("wolf");
     let lastScrollTop = 0;
     let scrollTimeout;
     let currentDirection = "sitting";
@@ -68,13 +131,13 @@ document.addEventListener("DOMContentLoaded", function() {
       if (scrollTop > lastScrollTop) {
         if (currentDirection !== "right") {
           wolf.src = animations.standUpRight;
-          setTimeout(() => wolf.src = animations.walkingRight, 384);
+          setTimeout(() => wolf.src = animations.walkingRight, 100);
           currentDirection = "right";
         }
       } else if (scrollTop < lastScrollTop) {
         if (currentDirection !== "left") {
           wolf.src = animations.standUpLeft;
-          setTimeout(() => wolf.src = animations.walkingLeft, 384);
+          setTimeout(() => wolf.src = animations.walkingLeft, 100);
           currentDirection = "left";
         }
       }
@@ -86,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
           wolf.src = animations.sitDownLeft;
         }
         currentDirection = "sitting";
-      }, 128);
+      }, 100);
 
       lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
     });
