@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
           event.preventDefault();
           guestButton.click();
           input.value = "";
+          counter.textContent = `${input.value.length}/${input.maxLength}`;
         }
       });
     }
