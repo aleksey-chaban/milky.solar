@@ -6,6 +6,15 @@
     max-width: 100%;
 }
 
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: red;
+    border-radius: 10px;
+}
+
 body {
     background-color: white;
     color: black;
@@ -28,14 +37,34 @@ footer {
     margin-bottom: 62px;
 }
 
-a {
+textarea {
+    resize: none;
+    background: none;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    color: red;
+}
+
+.footer-container span {
+    display: block;
+    margin-bottom: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    color: black;
+    font-size: xx-small;
+}
+
+.footer-container a {
+    display: inline-block;
+    margin: 0;
     font-family: 'Courier New', Courier, monospace;
     border: 1px solid white;
     color: red;
     text-decoration: none;
 }
 
-a:hover {
+.footer-container a:hover {
     background-color: red;
     border: 1px solid red;
     color: white;
@@ -81,6 +110,22 @@ a:hover {
     animation-name: float;
     animation-direction: normal;
     animation-duration: 8s;
+}
+
+.guest {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    background-color: rgba(255, 0, 0, 0.1);
+    border-bottom: 1px solid red;
+    margin-bottom: 10px;
+}
+
+.guest-input {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    color: red;
 }
 
 .wolf-container {
@@ -155,11 +200,63 @@ a:hover {
     width: 128px;
 }
 
+#guest-text {
+    width: 100%;
+    padding: 6px;
+}
+
+#guest-counter {
+    margin: 2px;
+    position: relative;
+    text-align: right;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: xx-small;
+}
+
+#guest-submit {
+    margin: 0;
+    width: 10%;
+    height: auto;
+    background-color: transparent;
+    border: none;
+    font-family: 'Courier New', Courier, monospace;
+    color: red;
+}
+
+#guest-submit-label {
+    background-color: transparent;
+}
+
+#guest-submit:hover {
+    background:
+        repeating-linear-gradient(
+            45deg,
+            red 0,
+            red 1px,
+            transparent 1px,
+            transparent 6px
+        );
+    color: white;
+}
+
+#guest-submit:active {
+    background-color: red;
+    color: white;
+}
+
+#guest-submit:hover #guest-submit-label {
+    background-color: red;
+}
+
+#guest-submit:active #guest-submit-label {
+    background-color: red;
+}
+
 #story-tag {
     display: none;
 }
 
-#wolf-animation {
+#wolf {
     height: 64px;
     filter: invert(0);
 }
@@ -176,11 +273,15 @@ a:hover {
         border-top: 1px solid white;
     }
 
-    a {
+    .footer-container span {
+        color: white;
+    }
+
+    .footer-container a {
         border-color: black;
     }
 
-    a:hover {
+    .footer-container a:hover {
         border-color: red;
         color: black
     }
@@ -228,7 +329,7 @@ a:hover {
         background-color: black;
     }
 
-    #wolf-animation {
+    #wolf {
         filter: invert(1);
     }
 }
@@ -243,12 +344,35 @@ a:hover {
     #wide-float .balloon {
         display: none;
     }
+
+    #guest-submit {
+        width: 20%;
+    }
 }
 
 /* Small Screens */
 @media (max-width: 600px) {
     .empty-land {
         display: none;
+    }
+
+    .guest {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    #guest-submit {
+        margin: 0;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 100%;
+        height: auto;
+        background-color: transparent;
+        border: none;
+        font-family: 'Courier New', Courier, monospace;
+        color: red;
+        transition-duration: 0.2s;
     }
 }
 

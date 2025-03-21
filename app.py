@@ -49,6 +49,10 @@ flask_api = flask.Flask(
     template_folder=template_path
 )
 
+OPENAI_KEY = os.getenv("openai_milky_solar_key")
+OPENAI_ORG = os.getenv("openai_milky_solar_org")
+OPENAI_PROJECT = os.getenv("openai_milky_solar_project")
+
 POSTGRES_DB = os.getenv("postgres_milky_solar_db")
 POSTGRES_USER = os.getenv("postgres_milky_solar_user")
 POSTGRES_PASSWORD = os.getenv("postgres_milky_solar_pass")
@@ -86,15 +90,11 @@ def get_story(scenario):
 def unlock_story(request, database):
     """Unlock a story."""
 
-    openai_key = os.getenv("openai_milky_solar_key")
-    openai_org = os.getenv("openai_milky_solar_org")
-    openai_project = os.getenv("openai_milky_solar_project")
-
     try:
         client = OpenAI(
-            api_key=openai_key,
-            organization=openai_org,
-            project=openai_project
+            api_key=OPENAI_KEY,
+            organization=OPENAI_ORG,
+            project=OPENAI_PROJECT
         )
     except Exception as e:
         logger.error("Server error: %s", e)
@@ -147,6 +147,94 @@ def unlock_story(request, database):
 
     return Response(generate(), content_type="text/plain")
 
+def unlock_guest(request):
+    """Unlock a guest story."""
+
+    try:
+        client = OpenAI(
+            api_key=OPENAI_KEY,
+            organization=OPENAI_ORG,
+            project=OPENAI_PROJECT
+        )
+    except Exception as e:
+        logger.error("Server error: %s", e)
+        raise e
+
+    with get_db_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT instructions FROM prompts WHERE id = 2")
+            system_instructions = cursor.fetchone()["instructions"]
+
+    if not system_instructions:
+        system_instructions = "Our guest is lost in the ether."
+
+    logger.info("Gathered instructions")
+
+    def generate(system_instructions=system_instructions):
+        response = client.chat.completions.create(
+            model="gpt-4o-2024-11-20",
+            temperature=0.6,
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_instructions
+                },
+                {
+                    "role": "user",
+                    "content": request
+                }
+            ],
+            stream=False
+        )
+
+        guest_profile = response.choices[0].message.content
+
+        logger.info("Gathered profile")
+
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT instructions FROM prompts WHERE id = 3")
+                system_instructions = cursor.fetchone()["instructions"]
+
+        logger.info("Gathered instructions")
+
+        response_stream = client.chat.completions.create(
+            model="gpt-4o-2024-11-20",
+            temperature=0.6,
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_instructions
+                },
+                {
+                    "role": "user",
+                    "content": guest_profile
+                }
+            ],
+            stream=True
+        )
+
+        story_content = ""
+        for chunk in response_stream:
+            if chunk.choices[0].delta.content is not None:
+                text_chunk = chunk.choices[0].delta.content
+                story_content += text_chunk
+                yield text_chunk
+
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO guest (story) VALUES (%s) RETURNING id", (story_content,))
+                story_id = cursor.fetchone()["id"]
+
+                connection.commit()
+
+            logger.info("Stored guest scenario %s", story_id)
+
+        logger.info("Retrieved story")
+
+
+    return Response(generate(system_instructions=system_instructions), content_type="text/plain")
+
 @flask_api.route("/")
 def home():
     """Render the home page."""
@@ -160,9 +248,9 @@ scenarios = [
     "california",
     "unitedkingdom"
 ]
+
 for scenario in scenarios:
     flask_api.add_url_rule(f"/{scenario}", f"get_{scenario}_story", lambda s=scenario: get_story(s), methods=["GET"])
-
 
 @flask_api.route("/random", methods=["GET"])
 def get_random_story():
@@ -208,6 +296,23 @@ def unlock_random_story():
     prompt = options[random_selection]["prompt"]
     database = options[random_selection]["database"]
     return unlock_story(request=prompt, database=database)
+
+@flask_api.route("/new-guest", methods=["POST"])
+def unlock_guest_story():
+    """Unlock a guest's story."""
+    data = flask.request.get_json()
+
+    if data:
+        guest_entry = data.get("guestInput")
+    else:
+        guest_entry = None
+
+    if not guest_entry:
+        return
+    if len(guest_entry) > 999:
+        return
+
+    return unlock_guest(request=guest_entry)
 
 @flask_api.route("/robots.txt")
 def serve_robots():
