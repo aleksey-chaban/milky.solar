@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         } catch (error) {
+            loadingAnimation.style.display = "none";
             storyContainer.innerText = "An error occurred.";
             console.error(error);
         } finally {
@@ -121,6 +122,7 @@ document.addEventListener("DOMContentLoaded", function() {
                   storyContainer.innerText += decoder.decode(value);
                 }
             } catch (error) {
+                loadingAnimation.style.display = "none";
                 storyContainer.innerText = "An error occurred.";
                 console.error(error);
             } finally {
