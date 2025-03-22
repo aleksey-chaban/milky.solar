@@ -46,6 +46,7 @@ textarea {
     margin: 0;
     color: red;
     font-size: 16px;
+    height: calc(6 * 1.2em);
 }
 
 .footer-container span {
@@ -348,6 +349,11 @@ textarea {
 @media (max-width: 890px) {
     body {
         width: 90%;
+    }
+
+    textarea {
+        height: calc(3 * 1.2em);
+
     }
 
     #wide-float .cloud,
