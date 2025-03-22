@@ -111,7 +111,7 @@ def unlock_story(request, database):
 
     def generate():
         response_stream = client.chat.completions.create(
-            model="gpt-4o-2024-11-20",
+            model=OPENAI_MODEL,
             temperature=0.6,
             messages=[
                 {
