@@ -49,6 +49,8 @@ flask_api = flask.Flask(
     template_folder=template_path
 )
 
+OPENAI_MODEL = "gpt-4.5-preview"
+
 OPENAI_KEY = os.getenv("openai_milky_solar_key")
 OPENAI_ORG = os.getenv("openai_milky_solar_org")
 OPENAI_PROJECT = os.getenv("openai_milky_solar_project")
@@ -172,7 +174,7 @@ def unlock_guest(request):
 
     def generate(system_instructions=system_instructions):
         response = client.chat.completions.create(
-            model="gpt-4o-2024-11-20",
+            model=OPENAI_MODEL,
             temperature=0.6,
             messages=[
                 {
@@ -199,7 +201,7 @@ def unlock_guest(request):
         logger.info("Gathered instructions")
 
         response_stream = client.chat.completions.create(
-            model="gpt-4o-2024-11-20",
+            model=OPENAI_MODEL,
             temperature=0.6,
             messages=[
                 {
