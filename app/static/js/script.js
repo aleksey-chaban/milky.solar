@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const storyContainer = document.getElementById("story-container");
     let isFetching = false;
     const scenarioButtons = document.querySelectorAll("img[data-scenario]");
+    const loadingAnimation = document.getElementById("loading");
 
     async function fetchStory(scenario) {
         if (isFetching) return;
@@ -12,6 +13,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         storyContainer.innerText = "";
         storyContainer.style.display = "block";
+
+        loadingAnimation.style.display = "block";
 
         try {
             let response;
@@ -23,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
 
+                loadingAnimation.style.display = "none";
                 storyContainer.innerText = "";
 
                 while (true) {
@@ -34,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 response = await fetch(`/${scenario}`);
                 const data = await response.json();
 
+                loadingAnimation.style.display = "none";
                 if (data.story) {
                     storyContainer.innerText = data.story;
                 } else {
@@ -83,12 +88,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (guestButton) {
       guestButton.addEventListener("click", async () => {
+            if (isFetching) return;
             const inputValue = input.value.trim();
             if (!inputValue) return;
             isFetching = true;
 
-            storyContainer.innerText = "Locating your profile";
+            storyContainer.innerText = "";
             storyContainer.style.display = "block";
+
+            loadingAnimation.style.display = "block";
 
             try {
                 const response = await fetch("/new-guest", {
@@ -97,6 +105,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     body: JSON.stringify({guestInput: inputValue})
                 });
 
+                loadingAnimation.style.display = "none";
                 storyContainer.innerText = "";
 
                 if (!response.ok) {
