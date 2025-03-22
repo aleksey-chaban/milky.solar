@@ -172,8 +172,9 @@
 
         <footer>
             <div class="footer-container">
-                <span>Powered by ChatGPT</span>
-                <a href="mailto:earth@milky.solar" aria-label="Email">@</a>
+                <span>
+                    <a href="{{ url_for('serve_terms') }}" target="_blank" rel="noopener noreferrer">Terms</a> & <a href="{{ url_for('serve_privacy') }}" target="_blank" rel="noopener noreferrer">Privacy</a>
+                </span>
             </div>
             <div class="wolf-container"><img id="wolf" src="{{ url_for('static', filename='img/animation/Wolf-Sit-Default.gif') }}" alt="Wolf animation"></div>
         </footer>

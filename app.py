@@ -316,6 +316,16 @@ def unlock_guest_story():
 
     return unlock_guest(request=guest_entry)
 
+@flask_api.route("/terms")
+def serve_terms():
+    """Serve terms"""
+    return flask.render_template("terms.html")
+
+@flask_api.route("/privacy")
+def serve_privacy():
+    """Serve privacy"""
+    return flask.render_template("privacy.html")
+
 @flask_api.route("/robots.txt")
 def serve_robots():
     """Serve robots.txt"""

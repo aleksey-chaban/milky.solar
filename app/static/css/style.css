@@ -130,6 +130,10 @@ textarea {
     color: red;
 }
 
+.footer-container {
+    transform: translateX(5px);
+}
+
 .wolf-container {
     position: fixed;
     bottom: 0;
@@ -137,7 +141,6 @@ textarea {
     width: 100%;
     display: flex;
     justify-content: center;
-    transform: translateX(3px);
     align-items: flex-end;
     pointer-events: none;
     background: linear-gradient(
@@ -261,8 +264,8 @@ textarea {
 #wolf {
     height: 64px;
     filter: invert(0);
+    transform: translateX(3px);
 }
-
 
 /* Dark Theme */
 @media (prefers-color-scheme: dark) {
