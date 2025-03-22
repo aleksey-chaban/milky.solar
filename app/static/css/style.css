@@ -36,8 +36,13 @@ textarea {
     padding: 0;
     margin: 0;
     color: red;
+    caret-color: red;
     font-size: 16px;
     height: calc(6 * 1.2em);
+}
+
+textarea::placeholder {
+    font-family: 'Courier New', Courier, monospace;
 }
 
 textarea::-webkit-scrollbar {
