@@ -6,15 +6,6 @@
     max-width: 100%;
 }
 
-*::-webkit-scrollbar {
-    width: 8px;
-}
-
-*::-webkit-scrollbar-thumb {
-    background-color: black;
-    border-radius: 10px;
-}
-
 body {
     background-color: white;
     color: black;
@@ -47,6 +38,15 @@ textarea {
     color: red;
     font-size: 16px;
     height: calc(6 * 1.2em);
+}
+
+textarea::-webkit-scrollbar {
+    width: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background-color: red;
+    border-radius: 1px;
 }
 
 .footer-container span {
