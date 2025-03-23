@@ -4,6 +4,7 @@
     padding: 0;
     box-sizing: border-box;
     max-width: 100%;
+    cursor: default;
 }
 
 body {
@@ -28,6 +29,25 @@ footer {
     margin-bottom: 62px;
 }
 
+select {
+    border: 1px solid red;
+    margin: 0;
+    background-color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    color: red;
+    font-size: 16px;
+}
+
+select option {
+    background-color: white;
+    color: red;
+}
+
+select option:checked {
+    background-color: red;
+    color: white;
+}
+
 textarea {
     resize: none;
     background: none;
@@ -35,6 +55,7 @@ textarea {
     outline: none;
     padding: 0;
     margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
     color: red;
     caret-color: red;
     font-size: 16px;
@@ -42,7 +63,7 @@ textarea {
 }
 
 textarea::placeholder {
-    font-family: 'Courier New', Courier, monospace;
+    color: rgba(255, 0, 0, 0.4);
 }
 
 textarea::-webkit-scrollbar {
@@ -57,15 +78,15 @@ textarea::-webkit-scrollbar-thumb {
 .footer-container span {
     display: block;
     margin-bottom: 10px;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: Arial, Helvetica, sans-serif;
     color: black;
     font-size: xx-small;
+    transform: translateX(-4px);
 }
 
 .footer-container a {
     display: inline-block;
     margin: 0;
-    font-family: 'Courier New', Courier, monospace;
     border: 1px solid white;
     color: red;
     text-decoration: none;
@@ -119,16 +140,39 @@ textarea::-webkit-scrollbar-thumb {
     animation-duration: 8s;
 }
 
-.guest {
+.user {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-input-selection {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    background:
+        repeating-linear-gradient(
+            45deg,
+            red 0,
+            red 1px,
+            rgba(255, 0, 0, 0.1) 1px,
+            rgba(255, 0, 0, 0.1) 6px
+        );
+    background-size: 100% 4px;
+    background-position: 0 0, 1px 1px;
+    padding: 4px;
+}
+
+.user-input-submission {
     display: flex;
     flex-direction: row;
     flex: 1;
+    width: 100%;
     background-color: rgba(255, 0, 0, 0.1);
     border-bottom: 1px solid red;
     margin-bottom: 10px;
 }
 
-.guest-input {
+.user-input {
     width: 100%;
     background-color: transparent;
     border: none;
@@ -214,20 +258,20 @@ textarea::-webkit-scrollbar-thumb {
     width: 128px;
 }
 
-#guest-text {
+#user-text {
     width: 100%;
-    padding: 6px;
+    padding: 8px;
 }
 
-#guest-counter {
+#user-counter {
     margin: 2px;
     position: relative;
     text-align: right;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: xx-small;
 }
 
-#guest-submit {
+#user-submit {
     margin: 0;
     width: 10%;
     height: auto;
@@ -237,11 +281,13 @@ textarea::-webkit-scrollbar-thumb {
     color: red;
 }
 
-#guest-submit-label {
+#user-submit-label {
     background-color: transparent;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
 }
 
-#guest-submit:hover {
+#user-submit:hover {
     background:
         repeating-linear-gradient(
             45deg,
@@ -250,26 +296,28 @@ textarea::-webkit-scrollbar-thumb {
             transparent 1px,
             transparent 6px
         );
+    background-size: 100% 4px;
+    background-position: 3px 0px, 1px 1px;
     color: white;
 }
 
-#guest-submit:active {
+#user-submit:active {
     background-color: red;
     color: white;
 }
 
-#guest-submit:hover #guest-submit-label {
+#user-submit:hover #user-submit-label {
     background-color: red;
 }
 
-#guest-submit:active #guest-submit-label {
+#user-submit:active #user-submit-label {
     background-color: red;
 }
 
 #wolf {
     height: 64px;
     filter: invert(0);
-    transform: translateX(3px);
+    transform: translateX(2px);
 }
 
 /* Dark Theme */
@@ -286,6 +334,20 @@ textarea::-webkit-scrollbar-thumb {
 
     footer {
         border-top: 1px solid white;
+    }
+
+    select {
+        background-color: black;
+    }
+
+    select option {
+        background-color: black;
+        color: red;
+    }
+
+    select option:checked {
+        background-color: red;
+        color: black;
     }
 
     .footer-container span {
@@ -369,24 +431,33 @@ textarea::-webkit-scrollbar-thumb {
         display: none;
     }
 
-    #guest-submit {
+    #user-submit {
         width: 20%;
+    }
+
+    #user-submit:hover {
+        background-position: 5px 0px, 1px 1px;
     }
 }
 
 /* Small Screens */
 @media (max-width: 600px) {
+
+    select {
+        width: 100%;
+    }
+
     .empty-land {
         display: none;
     }
 
-    .guest {
+    .user-input-submission {
         display: flex;
         flex-direction: column;
         flex: 1;
     }
 
-    #guest-submit {
+    #user-submit {
         margin: 0;
         padding-top: 10px;
         padding-bottom: 10px;

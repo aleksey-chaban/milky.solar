@@ -5,6 +5,26 @@ document.addEventListener("DOMContentLoaded", function() {
     const scenarioButtons = document.querySelectorAll("img[data-scenario]");
     const loadingAnimation = document.getElementById("loading");
 
+    function closeAllSelect(elmnt) {
+        var x, y, i, xl, yl, arrNo = [];
+        x = document.getElementsByClassName("select-items");
+        y = document.getElementsByClassName("select-selected");
+        xl = x.length;
+        yl = y.length;
+        for (i = 0; i < yl; i++) {
+          if (elmnt == y[i]) {
+            arrNo.push(i)
+          } else {
+            y[i].classList.remove("select-arrow-active");
+          }
+        }
+        for (i = 0; i < xl; i++) {
+          if (arrNo.indexOf(i)) {
+            x[i].classList.add("select-hide");
+          }
+        }
+      }
+
     async function fetchStory(scenario) {
         if (isFetching) return;
         isFetching = true;
@@ -62,8 +82,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    const input = document.getElementById("guest-text");
-    const counter = document.getElementById("guest-counter");
+    const input = document.getElementById("user-text");
+    const counter = document.getElementById("user-counter");
 
     if (input && counter) {
       const maxLength = input.maxLength;
@@ -74,36 +94,43 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     };
 
-    const guestButton = document.getElementById("guest-submit");
+    const userButton = document.getElementById("user-submit");
 
-    if (input && guestButton) {
+    if (input && userButton) {
       input.addEventListener("keydown", (event) => {
         if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
-          guestButton.click();
+          userButton.click();
           input.value = "";
           counter.textContent = `${input.value.length}/${input.maxLength}`;
         }
       });
     }
 
-    if (guestButton) {
-      guestButton.addEventListener("click", async () => {
+    if (userButton) {
+        userButton.addEventListener("click", async () => {
             if (isFetching) return;
+
             const inputValue = input.value.trim();
-            if (!inputValue) return;
+            const userTypeSelect = document.getElementById("user-type");
+            const userTypeValue = userTypeSelect.value;
+
+            if (!inputValue || !userTypeValue) return;
+
             isFetching = true;
 
             storyContainer.innerText = "";
             storyContainer.style.display = "block";
-
             loadingAnimation.style.display = "block";
 
             try {
-                const response = await fetch("/new-guest", {
+                const response = await fetch("/new-user", {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({guestInput: inputValue})
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        userInput: inputValue,
+                        userType: userTypeValue
+                    })
                 });
 
                 loadingAnimation.style.display = "none";
@@ -117,9 +144,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 const decoder = new TextDecoder();
 
                 while (true) {
-                  const {value, done} = await reader.read();
-                  if (done) break;
-                  storyContainer.innerText += decoder.decode(value);
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    storyContainer.innerText += decoder.decode(value);
                 }
             } catch (error) {
                 loadingAnimation.style.display = "none";
@@ -127,9 +154,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error(error);
             } finally {
                 isFetching = false;
+                input.value = "";
+                counter.textContent = `0/${input.maxLength}`;
+                userTypeSelect.selectedIndex = 0;
             }
         });
     }
+
 
     const wolf = document.getElementById("wolf");
     let lastScrollTop = 0;

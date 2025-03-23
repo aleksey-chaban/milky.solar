@@ -72,6 +72,13 @@ def get_db_connection():
         row_factory=dict_row
     )
 
+def fetch_prompt(prompt_id):
+    """Retrieve a prompt from the database."""
+    with get_db_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT instructions FROM prompts WHERE id = %s", (prompt_id,))
+            return cursor.fetchone()["instructions"]
+
 def get_story(scenario):
     """Retrieve a story from the specified scenario."""
     with get_db_connection() as connection:
@@ -102,10 +109,7 @@ def unlock_story(request, database):
         logger.error("Server error: %s", e)
         raise e
 
-    with get_db_connection() as connection:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT instructions FROM prompts WHERE id = 1")
-            system_instructions = cursor.fetchone()["instructions"]
+    system_instructions = fetch_prompt(1)
 
     logger.info("Gathered instructions")
 
@@ -162,10 +166,7 @@ def unlock_guest(request):
         logger.error("Server error: %s", e)
         raise e
 
-    with get_db_connection() as connection:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT instructions FROM prompts WHERE id = 2")
-            system_instructions = cursor.fetchone()["instructions"]
+    system_instructions = fetch_prompt(2)
 
     if not system_instructions:
         system_instructions = "Our guest is lost in the ether."
@@ -193,12 +194,111 @@ def unlock_guest(request):
 
         logger.info("Gathered profile")
 
-        with get_db_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute("SELECT instructions FROM prompts WHERE id = 3")
-                system_instructions = cursor.fetchone()["instructions"]
+        system_instructions = fetch_prompt(3)
 
         logger.info("Gathered instructions")
+
+        response_stream = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            temperature=0.6,
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_instructions
+                },
+                {
+                    "role": "user",
+                    "content": guest_profile
+                }
+            ],
+            stream=True
+        )
+
+        story_content = ""
+        for chunk in response_stream:
+            if chunk.choices[0].delta.content is not None:
+                text_chunk = chunk.choices[0].delta.content
+                story_content += text_chunk
+                yield text_chunk
+
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO guest (story) VALUES (%s) RETURNING id", (story_content,))
+                story_id = cursor.fetchone()["id"]
+
+                connection.commit()
+
+            logger.info("Stored guest scenario %s", story_id)
+
+        logger.info("Retrieved story")
+
+
+    return Response(generate(system_instructions=system_instructions), content_type="text/plain")
+
+def unlock_guest_scenario(request, scenario):
+    """Unlock a guest scenario."""
+
+    try:
+        client = OpenAI(
+            api_key=OPENAI_KEY,
+            organization=OPENAI_ORG,
+            project=OPENAI_PROJECT
+        )
+    except Exception as e:
+        logger.error("Server error: %s", e)
+        raise e
+
+    system_instructions = fetch_prompt(2)
+
+    if not system_instructions:
+        system_instructions = "Our guest is lost in the ether."
+        return system_instructions
+
+    logger.info("Gathered instructions")
+
+    def generate(system_instructions=system_instructions):
+        response = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            temperature=0.6,
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_instructions
+                },
+                {
+                    "role": "user",
+                    "content": request
+                }
+            ],
+            stream=False
+        )
+
+        guest_profile = response.choices[0].message.content
+
+        logger.info("Gathered profile")
+
+        start_system_instructions = fetch_prompt(4)
+
+        logger.info("Gathered instructions")
+
+        end_system_instructions = fetch_prompt(5)
+
+        logger.info("Gathered instructions")
+
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(f"SELECT COUNT(*) FROM {scenario}")
+                total_rows = cursor.fetchone()["count"]
+                random_id = random.randint(1, total_rows)
+
+                logger.info("%s index selected: %s", scenario, random_id)
+
+                cursor.execute(f"SELECT story FROM {scenario} WHERE id = %s", (random_id,))
+                story = cursor.fetchone()["story"]
+
+        logger.info("Retrieved story")
+
+        system_instructions = "\n".join([start_system_instructions, story, end_system_instructions])
 
         response_stream = client.chat.completions.create(
             model=OPENAI_MODEL,
@@ -251,6 +351,17 @@ scenarios = [
     "unitedkingdom"
 ]
 
+user_scenarios = [
+    "guest",
+    "israel",
+    "australia",
+    "newzealand",
+    "otherworld",
+    "california",
+    "unitedkingdom",
+    "random"
+]
+
 for scenario in scenarios:
     flask_api.add_url_rule(f"/{scenario}", f"get_{scenario}_story", lambda s=scenario: get_story(s), methods=["GET"])
 
@@ -299,13 +410,17 @@ def unlock_random_story():
     database = options[random_selection]["database"]
     return unlock_story(request=prompt, database=database)
 
-@flask_api.route("/new-guest", methods=["POST"])
+@flask_api.route("/new-user", methods=["POST"])
 def unlock_guest_story():
     """Unlock a guest's story."""
     data = flask.request.get_json()
 
+    scenario = "guest"
+
     if data:
-        guest_entry = data.get("guestInput")
+        guest_entry = data.get("userInput").strip()
+        if data.get("userType") in user_scenarios:
+            scenario = data.get("userType")
     else:
         guest_entry = None
 
@@ -314,7 +429,15 @@ def unlock_guest_story():
     if len(guest_entry) > 999:
         return
 
-    return unlock_guest(request=guest_entry)
+    if scenario == "guest":
+        return unlock_guest(request=guest_entry)
+    if scenario in scenarios:
+        return unlock_guest_scenario(request=guest_entry, scenario=scenario)
+    if scenario == "random":
+        random_scenario = random.choice(scenarios)
+        return unlock_guest_scenario(request=guest_entry, scenario=random_scenario)
+
+    return
 
 @flask_api.route("/terms")
 def serve_terms():
@@ -343,4 +466,4 @@ def serve_sitemap():
     )
 
 if __name__ == "__main__":
-    waitress.serve(flask_api, host="0.0.0.0", port=10000, threads=8)
+    waitress.serve(flask_api, host="127.0.0.1", port=10000, threads=8)

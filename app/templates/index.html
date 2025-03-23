@@ -154,14 +154,31 @@
                 <img data-scenario="unitedkingdom" class="button" src="{{ url_for('static', filename='img/scenarios/unitedkingdom.png') }}" alt="United Kingdom">
                 <div class="empty-land"></div>
             </div>
-            <div class="guest">
-                <div class="guest-input">
-                    <textarea id="guest-text" name="guest-input" minlength="1" maxlength="999" placeholder="Who are you?" required></textarea>
-                    <div id="guest-counter">0/999</div>
+            <div class="user">
+                <div class="user-dropdown"></div>
+                    <div class="user-input-selection">
+                        <select id="user-type" name="user-type">
+                            <option value="user" disabled selected>How do I know you?</option>
+                            <option value="user">You don't</option>
+                            <option value="israel">Israel</option>
+                            <option value="australia">Australia</option>
+                            <option value="newzealand">New Zealand</option>
+                            <option value="otherworld">Otherworld</option>
+                            <option value="california">California</option>
+                            <option value="unitedkingdom">United Kingdom</option>
+                            <option value="random">I can't remember</option>
+                        </select>
+                    </div>
                 </div>
-                <button type="submit" id="guest-submit">
-                    <span id="guest-submit-label">Submit</span>
-                </button>
+                <div class="user-input-submission">
+                    <div class="user-input">
+                        <textarea id="user-text" name="user-input" minlength="1" maxlength="999" placeholder="Who are you?" required></textarea>
+                        <div id="user-counter">0/999</div>
+                    </div>
+                    <button type="submit" id="user-submit">
+                        <span id="user-submit-label">Submit</span>
+                    </button>
+                </div>
             </div>
         </header>
 
