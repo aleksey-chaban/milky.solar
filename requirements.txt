@@ -1,5 +1,6 @@
 flask
 flask_limiter
+redis
 waitress
 psycopg
 openai
