@@ -75,7 +75,7 @@ limiter = Limiter(
     ]
 )
 
-OPENAI_MODEL = "gpt-4.5-preview"
+OPENAI_MODEL = "gpt-4o-2024-11-20"
 
 OPENAI_KEY = os.getenv("openai_milky_solar_key")
 OPENAI_ORG = os.getenv("openai_milky_solar_org")
