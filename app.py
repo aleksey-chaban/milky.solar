@@ -499,8 +499,16 @@ def serve_sitemap():
         "sitemap.xml"
     )
 
+@flask_api.before_request
+def block_duplicated_parameters():
+    """Block duplicated query parameters"""
+    for _, values in flask.request.args.lists():
+        if len(values) > 1:
+            return flask.jsonify({"error": "Something went wrong."}), 400
+
 @flask_api.after_request
 def set_security_headers(response):
+    """Set security headers"""
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
         "script-src 'self'; "
