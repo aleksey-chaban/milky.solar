@@ -46,6 +46,8 @@ logger.addHandler(file_handler)
 static_path = os.path.join(os.getcwd(), "app", "static")
 template_path = os.path.join(os.getcwd(), "app", "templates")
 
+REDIS_URL = os.getenv("upstash_milky_solar_redis")
+
 flask_api = flask.Flask(
     __name__,
     static_folder=static_path,
@@ -55,6 +57,7 @@ flask_api = flask.Flask(
 limiter = Limiter(
     get_remote_address,
     app=flask_api,
+    storage_uri=REDIS_URL,
     default_limits=[
         "100 per day",
         "30 per hour",
