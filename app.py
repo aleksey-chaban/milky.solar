@@ -62,7 +62,7 @@ try:
     logger.info("Redis is reachable.")
 except redis.exceptions.ConnectionError as e:
     logger.error("Redis is not reachable: %s", e)
-    raise RuntimeError("Failed to connect to Redis")
+    raise RuntimeError("Failed to connect to Redis") from e
 
 limiter = Limiter(
     get_remote_address,
