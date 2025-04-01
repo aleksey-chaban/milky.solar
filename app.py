@@ -14,6 +14,8 @@ from flask import Response
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+import redis
+
 import waitress
 
 from openai import OpenAI
@@ -46,13 +48,21 @@ logger.addHandler(file_handler)
 static_path = os.path.join(os.getcwd(), "app", "static")
 template_path = os.path.join(os.getcwd(), "app", "templates")
 
-REDIS_URL = os.getenv("upstash_milky_solar_redis")
-
 flask_api = flask.Flask(
     __name__,
     static_folder=static_path,
     template_folder=template_path
 )
+
+REDIS_URL = os.getenv("upstash_milky_solar_redis")
+
+try:
+    r = redis.from_url(REDIS_URL)
+    r.ping()
+    logger.info("Redis is reachable.")
+except redis.exceptions.ConnectionError as e:
+    logger.error("Redis is not reachable: %s", e)
+    raise RuntimeError("Failed to connect to Redis")
 
 limiter = Limiter(
     get_remote_address,
