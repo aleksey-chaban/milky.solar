@@ -454,10 +454,8 @@ def unlock_guest_story():
     else:
         guest_entry = None
 
-    if not guest_entry:
-        return
-    if len(guest_entry) > 999:
-        return
+    if not guest_entry or len(guest_entry) > 999:
+        return flask.jsonify({"error": "Invalid input"}), 400
 
     if scenario == "guest":
         return unlock_guest(request=guest_entry)
