@@ -56,8 +56,6 @@ limiter = Limiter(
     get_remote_address,
     app=flask_api,
     default_limits=[
-        "500 per month",
-        "250 per week",
         "100 per day",
         "30 per hour",
         "2 per minute"
