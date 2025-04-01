@@ -11,6 +11,9 @@ from psycopg.rows import dict_row
 
 import flask
 from flask import Response
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 import waitress
 
 from openai import OpenAI
@@ -47,6 +50,18 @@ flask_api = flask.Flask(
     __name__,
     static_folder=static_path,
     template_folder=template_path
+)
+
+limiter = Limiter(
+    get_remote_address,
+    app=flask_api,
+    default_limits=[
+        "500 per month",
+        "250 per week",
+        "100 per day",
+        "30 per hour",
+        "2 per minute"
+    ]
 )
 
 OPENAI_MODEL = "gpt-4.5-preview"
@@ -337,6 +352,7 @@ def unlock_guest_scenario(request, scenario):
 
     return Response(generate(system_instructions=system_instructions), content_type="text/plain")
 
+@limiter.exempt
 @flask_api.route("/")
 def home():
     """Render the home page."""
@@ -363,8 +379,11 @@ user_scenarios = [
 ]
 
 for scenario in scenarios:
-    flask_api.add_url_rule(f"/{scenario}", f"get_{scenario}_story", lambda s=scenario: get_story(s), methods=["GET"])
+    lambda_function = lambda s=scenario: get_story(s)
+    lambda_function = limiter.exempt(lambda_function)
+    flask_api.add_url_rule(f"/{scenario}", f"get_{scenario}_story", lambda_function, methods=["GET"])
 
+@limiter.exempt
 @flask_api.route("/random", methods=["GET"])
 def get_random_story():
     """Retrieve a story from any scenario."""
@@ -439,16 +458,19 @@ def unlock_guest_story():
 
     return
 
+@limiter.exempt
 @flask_api.route("/terms")
 def serve_terms():
     """Serve terms"""
     return flask.render_template("terms.html")
 
+@limiter.exempt
 @flask_api.route("/privacy")
 def serve_privacy():
     """Serve privacy"""
     return flask.render_template("privacy.html")
 
+@limiter.exempt
 @flask_api.route("/robots.txt")
 def serve_robots():
     """Serve robots.txt"""
@@ -457,6 +479,7 @@ def serve_robots():
         "robots.txt"
     )
 
+@limiter.exempt
 @flask_api.route("/sitemap.xml")
 def serve_sitemap():
     """Serve sitemap.xml"""
@@ -464,6 +487,22 @@ def serve_sitemap():
         static_path,
         "sitemap.xml"
     )
+
+@flask_api.after_request
+def set_security_headers(response):
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data:; "
+        "connect-src 'self'; "
+        "font-src 'self'; "
+        "frame-ancestors 'none';"
+    )
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains; preload"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
 
 if __name__ == "__main__":
     waitress.serve(flask_api, host="0.0.0.0", port=10000, threads=8)
