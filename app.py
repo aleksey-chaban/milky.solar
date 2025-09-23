@@ -142,7 +142,6 @@ def unlock_story(request, database):
     def generate():
         response_stream = client.chat.completions.create(
             model=OPENAI_MODEL,
-            temperature=0.6,
             messages=[
                 {
                     "role": "system",
@@ -202,7 +201,6 @@ def unlock_guest(request):
     def generate(system_instructions=system_instructions):
         response = client.chat.completions.create(
             model=OPENAI_MODEL,
-            temperature=0.6,
             messages=[
                 {
                     "role": "system",
@@ -226,7 +224,6 @@ def unlock_guest(request):
 
         response_stream = client.chat.completions.create(
             model=OPENAI_MODEL,
-            temperature=0.6,
             messages=[
                 {
                     "role": "system",
@@ -285,7 +282,6 @@ def unlock_guest_scenario(request, scenario):
     def generate(system_instructions=system_instructions):
         response = client.chat.completions.create(
             model=OPENAI_MODEL,
-            temperature=0.6,
             messages=[
                 {
                     "role": "system",
@@ -328,7 +324,6 @@ def unlock_guest_scenario(request, scenario):
 
         response_stream = client.chat.completions.create(
             model=OPENAI_MODEL,
-            temperature=0.6,
             messages=[
                 {
                     "role": "system",
