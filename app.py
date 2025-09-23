@@ -75,7 +75,7 @@ limiter = Limiter(
     ]
 )
 
-OPENAI_MODEL = "gpt-5"
+OPENAI_MODEL = "gpt-5-mini"
 
 OPENAI_KEY = os.getenv("openai_milky_solar_key")
 OPENAI_ORG = os.getenv("openai_milky_solar_org")
