@@ -1,3 +1,5 @@
 legacy/
 logs/*
+.vscode/
+.venv/
 .DS_Store
