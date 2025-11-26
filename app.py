@@ -517,5 +517,6 @@ def set_security_headers(response):
     return response
 
 if __name__ == "__main__":
-    waitress.serve(flask_api, host="0.0.0.0", port=10000, threads=8)
+    waitress.serve(flask_api, host="0.0.0.0", port=10000, threads=8, channel_timeout=600)
+
 
