@@ -75,7 +75,7 @@ limiter = Limiter(
     ]
 )
 
-OPENAI_MODEL = "gpt-4.1"
+OPENAI_MODEL = "gpt-5.1"
 
 OPENAI_KEY = os.getenv("openai_milky_solar_key")
 OPENAI_ORG = os.getenv("openai_milky_solar_org")
@@ -518,3 +518,4 @@ def set_security_headers(response):
 
 if __name__ == "__main__":
     waitress.serve(flask_api, host="0.0.0.0", port=10000, threads=8)
+
