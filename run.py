@@ -43,8 +43,7 @@ if __name__ == "__main__":
     options = {
         "bind": f"{IP_ADDRESS}:{PORT_NUMBER}",
         "workers": workers,
-        "worker_class": "gthread",
-        "threads": 8,
+        "worker_class": "sync",
         "timeout": 180,
         "keepalive": 5,
         "max_requests": 1000,

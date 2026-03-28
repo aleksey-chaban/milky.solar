@@ -6,7 +6,7 @@ import psycopg
 from psycopg.rows import dict_row
 
 import flask
-from flask import Response
+from flask import Response, stream_with_context
 
 from openai import OpenAI
 
@@ -124,7 +124,15 @@ def unlock_story(request, database):
         logger.info("Retrieved story")
 
 
-    return Response(generate(), content_type="text/plain")
+    return Response(
+        stream_with_context(generate()),
+        content_type="text/plain; charset=utf-8",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
 
 def unlock_guest(request):
     """Unlock a guest story."""
@@ -206,8 +214,15 @@ def unlock_guest(request):
 
         logger.info("Retrieved story")
 
+    return Response(
+        stream_with_context(generate(system_instructions=system_instructions)),
+        content_type="text/plain; charset=utf-8",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
+    )
 
-    return Response(generate(system_instructions=system_instructions), content_type="text/plain")
 
 def unlock_guest_scenario(request, scenario):
     """Unlock a guest scenario."""
@@ -310,4 +325,11 @@ def unlock_guest_scenario(request, scenario):
         logger.info("Retrieved story")
 
 
-    return Response(generate(system_instructions=system_instructions), content_type="text/plain")
+    return Response(
+        stream_with_context(generate(system_instructions=system_instructions)),
+        content_type="text/plain; charset=utf-8",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
+    )

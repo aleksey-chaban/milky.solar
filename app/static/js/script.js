@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 while (true) {
                     const { value, done } = await reader.read();
                     if (done) break;
-                    storyContainer.innerText += decoder.decode(value);
+                    storyContainer.innerText += decoder.decode(value, { stream: true });
                 }
             } else {
                 response = await fetch(`/${scenario}`);
@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 while (true) {
                     const { value, done } = await reader.read();
                     if (done) break;
-                    storyContainer.innerText += decoder.decode(value);
+                    storyContainer.innerText += decoder.decode(value, { stream: true });
                 }
             } catch (error) {
                 loadingAnimation.style.display = "none";
