@@ -1,6 +1,6 @@
 flask
 flask_limiter
 redis
-waitress
+gunicorn
 psycopg
 openai
