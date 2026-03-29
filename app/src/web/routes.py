@@ -5,7 +5,6 @@ import random
 import flask
 
 from app.config import (
-    logger,
     limiter,
     flask_api,
     static_path,
@@ -44,18 +43,18 @@ def get_random_story():
             total_rows = cursor.fetchone()["count"]
             random_index = random.randint(1, total_rows)
 
-            logger.info("Random index selected: %s", random_index)
+            print(f"Random index selected: {random_index}")
 
             cursor.execute("SELECT scenario, story_id FROM stories WHERE id = %s", (random_index,))
             result = cursor.fetchone()
             scenario, story_id = result["scenario"], result["story_id"]
 
-            logger.info("Scenario: %s, Story ID: %s", scenario, story_id)
+            print(f"Scenario: {scenario}, Story ID: {story_id}")
 
             cursor.execute(f"SELECT story FROM {scenario} WHERE id = %s", (story_id,))
             story = cursor.fetchone()["story"]
 
-            logger.info("Retrieved story")
+            print("Retrieved story")
 
             return flask.jsonify({"story": story})
 
@@ -165,7 +164,6 @@ def set_security_headers(response):
     )
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["Strict-Transport-Security"] = (
         "max-age=63072000; includeSubDomains; preload"
     )

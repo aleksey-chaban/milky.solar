@@ -11,7 +11,6 @@ from flask import Response, stream_with_context
 from openai import OpenAI
 
 from app.config import (
-    logger,
     OPENAI_KEY,
     OPENAI_ORG,
     OPENAI_PROJECT,
@@ -54,12 +53,12 @@ def get_story(scenario):
             total_rows = cursor.fetchone()["count"]
             random_id = random.randint(1, total_rows)
 
-            logger.info("%s index selected: %s", scenario, random_id)
+            print(f"{scenario} index selected: {random_id}")
 
             cursor.execute(f"SELECT story FROM {scenario} WHERE id = %s", (random_id,))
             story = cursor.fetchone()["story"]
 
-            logger.info("Retrieved story")
+            print("Retrieved story")
 
             return flask.jsonify({"story": story})
 
@@ -119,9 +118,9 @@ def unlock_story(request, database):
 
                 connection.commit()
 
-            logger.info("Stored %s scenario %s", database, story_id)
+            print(f"Stored {database} scenario {story_id}")
 
-        logger.info("Retrieved story")
+        print("Retrieved story")
 
 
     return Response(
@@ -137,22 +136,18 @@ def unlock_story(request, database):
 def unlock_guest(request):
     """Unlock a guest story."""
 
-    try:
-        client = OpenAI(
-            api_key=OPENAI_KEY,
-            organization=OPENAI_ORG,
-            project=OPENAI_PROJECT
-        )
-    except Exception as e:
-        logger.error("Server error: %s", e)
-        raise e
+    client = OpenAI(
+        api_key=OPENAI_KEY,
+        organization=OPENAI_ORG,
+        project=OPENAI_PROJECT
+    )
 
     system_instructions = fetch_prompt(2)
 
     if not system_instructions:
         system_instructions = "Our guest is lost in the ether."
 
-    logger.info("Gathered instructions")
+    print("Gathered instructions")
 
     def generate(system_instructions=system_instructions):
         response = client.chat.completions.create(
@@ -172,11 +167,11 @@ def unlock_guest(request):
 
         guest_profile = response.choices[0].message.content
 
-        logger.info("Gathered profile")
+        print("Gathered profile")
 
         system_instructions = fetch_prompt(3)
 
-        logger.info("Gathered instructions")
+        print("Gathered instructions")
 
         response_stream = client.chat.completions.create(
             model=OPENAI_MODEL,
@@ -210,9 +205,9 @@ def unlock_guest(request):
 
                 connection.commit()
 
-            logger.info("Stored guest scenario %s", story_id)
+            print(f"Stored guest scenario {story_id}")
 
-        logger.info("Retrieved story")
+        print("Retrieved story")
 
     return Response(
         stream_with_context(generate(system_instructions=system_instructions)),
@@ -227,15 +222,11 @@ def unlock_guest(request):
 def unlock_guest_scenario(request, scenario):
     """Unlock a guest scenario."""
 
-    try:
-        client = OpenAI(
-            api_key=OPENAI_KEY,
-            organization=OPENAI_ORG,
-            project=OPENAI_PROJECT
-        )
-    except Exception as e:
-        logger.error("Server error: %s", e)
-        raise e
+    client = OpenAI(
+        api_key=OPENAI_KEY,
+        organization=OPENAI_ORG,
+        project=OPENAI_PROJECT
+    )
 
     system_instructions = fetch_prompt(2)
 
@@ -243,7 +234,7 @@ def unlock_guest_scenario(request, scenario):
         system_instructions = "Our guest is lost in the ether."
         return system_instructions
 
-    logger.info("Gathered instructions")
+    print("Gathered instructions")
 
     def generate(system_instructions=system_instructions):
         response = client.chat.completions.create(
@@ -263,15 +254,15 @@ def unlock_guest_scenario(request, scenario):
 
         guest_profile = response.choices[0].message.content
 
-        logger.info("Gathered profile")
+        print("Gathered profile")
 
         start_system_instructions = fetch_prompt(4)
 
-        logger.info("Gathered instructions")
+        print("Gathered instructions")
 
         end_system_instructions = fetch_prompt(5)
 
-        logger.info("Gathered instructions")
+        print("Gathered instructions")
 
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
@@ -279,12 +270,12 @@ def unlock_guest_scenario(request, scenario):
                 total_rows = cursor.fetchone()["count"]
                 random_id = random.randint(1, total_rows)
 
-                logger.info("%s index selected: %s", scenario, random_id)
+                print(f"{scenario} index selected: {random_id}")
 
                 cursor.execute(f"SELECT story FROM {scenario} WHERE id = %s", (random_id,))
                 story = cursor.fetchone()["story"]
 
-        logger.info("Retrieved story")
+        print("Retrieved story")
 
         system_instructions = "\n".join([start_system_instructions, story, end_system_instructions])
 
@@ -320,9 +311,9 @@ def unlock_guest_scenario(request, scenario):
 
                 connection.commit()
 
-            logger.info("Stored guest scenario %s", story_id)
+            print(f"Stored guest scenario {story_id}")
 
-        logger.info("Retrieved story")
+        print("Retrieved story")
 
 
     return Response(

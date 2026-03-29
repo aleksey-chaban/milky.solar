@@ -3,16 +3,11 @@
 import waitress
 
 from app.config import (
-    logger,
     IP_ADDRESS,
     PORT_NUMBER
 )
 
 from app.src.web.routes import flask_api
-
-
-logger.info("Starting application")
-logger.info("Parsing secrets and variables")
 
 
 if __name__ == "__main__":
