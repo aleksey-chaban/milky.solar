@@ -8,7 +8,7 @@ A storytelling project focused on Wolf's adventures.
 
 ## Status
 
-Active
+Maintenance
 
 ## License
 
