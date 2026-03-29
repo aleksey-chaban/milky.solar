@@ -73,7 +73,7 @@ def unlock_story(request, database):
 
     system_instructions = fetch_prompt(1)
 
-    logger.info("Gathered instructions")
+    print("Gathered instructions")
 
     def generate():
         response_stream = client.chat.completions.create(
