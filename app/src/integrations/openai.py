@@ -65,16 +65,11 @@ def get_story(scenario):
 def unlock_story(request, database):
     """Unlock a story."""
 
-    try:
-        client = OpenAI(
-            api_key=OPENAI_KEY,
-            organization=OPENAI_ORG,
-            project=OPENAI_PROJECT
-        )
-    except Exception as e:
-        logger.error("Server error: %s", e)
-
-        raise e
+    client = OpenAI(
+        api_key=OPENAI_KEY,
+        organization=OPENAI_ORG,
+        project=OPENAI_PROJECT
+    )
 
     system_instructions = fetch_prompt(1)
 
