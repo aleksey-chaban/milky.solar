@@ -15,6 +15,6 @@ if __name__ == "__main__":
         flask_api,
         host=IP_ADDRESS,
         port=PORT_NUMBER,
-        threads=8,
+        threads=16,
         channel_timeout=600,
     )
