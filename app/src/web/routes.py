@@ -96,8 +96,6 @@ def unlock_guest_story():
         random_scenario = random.choice(SCENARIOS)
         return unlock_guest_scenario(request=guest_entry, scenario=random_scenario)
 
-    return
-
 
 @limiter.exempt
 @flask_api.route("/terms")
